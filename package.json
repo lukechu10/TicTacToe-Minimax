@@ -1,0 +1,22 @@
+{
+  "name": "tictactoe",
+  "version": "1.0.0",
+  "description": "TicTacToe Minimax algorithm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukechu10/TicTacToe-Minimax.git"
+  },
+  "keywords": [
+    "tictactoe"
+  ],
+  "author": "lukechu10",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lukechu10/TicTacToe-Minimax/issues"
+  },
+  "homepage": "https://github.com/lukechu10/TicTacToe-Minimax#readme"
+}
