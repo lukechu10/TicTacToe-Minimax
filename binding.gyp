@@ -1,8 +1,8 @@
 {
   "targets": [
     {
-      "target_name": "binding",
-      "sources": [ "TicTacToe Minimax/TicTacToe Minimax.cpp" ]
+      "target_name": "tictactoe",
+      "sources": [ "TicTacToe_Minimax/TicTacToe_Minimax.cpp" ]
     }
   ]
 }
