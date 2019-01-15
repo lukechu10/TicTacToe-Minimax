@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TicTacToe Minimax", "TicTacToe Minimax\TicTacToe Minimax.vcxproj", "{35CF2F2F-B86C-4F91-AD1E-C2AF927028FD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TicTacToe_Minimax", "TicTacToe_Minimax\TicTacToe_Minimax.vcxproj", "{35CF2F2F-B86C-4F91-AD1E-C2AF927028FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
