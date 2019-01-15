@@ -216,24 +216,18 @@ namespace addon {
 	using v8::Integer;
 	using v8::Number;
 	
+	const char* ToCString(const String::Utf8Value& value){
+		return *value ? *value : "<string conversion failed>";
+	}
+	
 	void bestMove(const FunctionCallbackInfo<Value>& args){
 		Isolate* isolate = args.GetIsolate();
 		
-		Local<Array> result_list = Array::New(isolate);
-		
-		Local<Array> input = Local<Array>::Cast(args[0]);
-    	unsigned int num = input->Length();
-    	
-    	
-    	vector<char> values(9, '_');
-    	
-		for (unsigned int i = 0; i < num_locations; i++) {
-			values.push_back(
-				unpack_location(isolate, Local<Object>::Cast(input->Get(i)))
-			);
-		}
-		
-		
+		String::Utf8Value s(args[0]);
+		char str[] = ToCString(s);
+
+		Local<String> retval = String::NewFromUtf8(isolate, str.c_str());
+		const char* bar = ToCString(retval);
 	}
 	
 	

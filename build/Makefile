@@ -300,3 +300,25 @@ $(obj).$(TOOLSET)/%.o: $(obj)/%.S FORCE_DO_CMD
 $(obj).$(TOOLSET)/%.o: $(obj)/%.s FORCE_DO_CMD
 	@$(call do_cmd,cc,1)
 
+
+ifeq ($(strip $(foreach prefix,$(NO_LOAD),\
+    $(findstring $(join ^,$(prefix)),\
+                 $(join ^,tictactoe.target.mk)))),)
+  include tictactoe.target.mk
+endif
+
+quiet_cmd_regen_makefile = ACTION Regenerating $@
+cmd_regen_makefile = cd $(srcdir); /home/ubuntu/workspace/node_modules/node-gyp/gyp/gyp_main.py -fmake --ignore-environment "--toplevel-dir=." -I/home/ubuntu/workspace/build/config.gypi -I/home/ubuntu/workspace/node_modules/node-gyp/addon.gypi -I/home/ubuntu/.node-gyp/10.15.0/include/node/common.gypi "--depth=." "-Goutput_dir=." "--generator-output=build" "-Dlibrary=shared_library" "-Dvisibility=default" "-Dnode_root_dir=/home/ubuntu/.node-gyp/10.15.0" "-Dnode_gyp_dir=/home/ubuntu/workspace/node_modules/node-gyp" "-Dnode_lib_file=/home/ubuntu/.node-gyp/10.15.0/<(target_arch)/node.lib" "-Dmodule_root_dir=/home/ubuntu/workspace" "-Dnode_engine=v8" binding.gyp
+Makefile: $(srcdir)/../.node-gyp/10.15.0/include/node/common.gypi $(srcdir)/node_modules/node-gyp/addon.gypi $(srcdir)/build/config.gypi $(srcdir)/binding.gyp
+	$(call do_cmd,regen_makefile)
+
+# "all" is a concatenation of the "all" targets from all the included
+# sub-makefiles. This is just here to clarify.
+all:
+
+# Add in dependency-tracking rules.  $(all_deps) is the list of every single
+# target in our tree. Only consider the ones with .d (dependency) info:
+d_files := $(wildcard $(foreach f,$(all_deps),$(depsdir)/$(f).d))
+ifneq ($(d_files),)
+  include $(d_files)
+endif
