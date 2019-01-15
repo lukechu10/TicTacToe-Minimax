@@ -6,4 +6,7 @@
 #include <iostream>
 #include <algorithm>
 
+#include <node.h>
+#include <v8.h>
+
 #endif //PCH_H
