@@ -23,7 +23,7 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TicTacToe Minimax.cpp">
+    <ClCompile Include="TicTacToe_Minimax.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
