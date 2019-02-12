@@ -1,11 +1,5 @@
-const tictactoe = require("./build/Release/tictactoe.node");
+var tictactoe = null;
 
-var data = [
-    [ '_', '_', '_'],
-    [ 'o', 'x', '_'],
-    [ '_', '_', '_']];
+tictactoe = require('./build/Release/tictactoe');
 
-console.log(typeof data);
-console.log(typeof data[0]);
-
-console.log(tictactoe.bestMove(data));
+module.exports = tictactoe;

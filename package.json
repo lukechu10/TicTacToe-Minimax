@@ -1,11 +1,12 @@
 {
-  "name": "tictactoe",
+  "name": "tictactoe-minimax-ai",
   "version": "1.0.0",
-  "description": "TicTacToe Minimax algorithm",
+  "description": "Implements an AI that uses the minimax algorithm for the tictactoe game",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "gypfile": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lukechu10/TicTacToe-Minimax.git"
