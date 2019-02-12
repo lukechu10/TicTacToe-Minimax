@@ -44,6 +44,15 @@ namespace Game {
 		}
 	}
 	
+	void printVector(vector<vector<char>>& gameState) {
+		for (int x = 0; x < 3; x++) {
+			for (int y = 0; y < 3; y++) {
+				cout << gameState[x][y] << "; ";
+			}
+			cout << endl;
+		}
+	}
+	
 	bool endState(vector<vector<char>>& b) {
 		for (int x = 0; x < 3; x++) {
 			for (int y = 0; y < 3; y++) {
@@ -149,7 +158,7 @@ namespace Game {
 	
 	Move bestMove(vector<vector<char>>& gameState) {
 		if (endState(gameState) || evaluate(gameState) != 0) {
-			return Move(evaluate(gameState), 0, 0);
+			return Move(evaluate(gameState));
 		}
 		Move best(0, 0, 0); // stores best move
 	
@@ -175,82 +184,80 @@ namespace Game {
 			}
 		}
 	
-		printVector(values);
-	
 		// deduce return value;
 		if (best.value < 0) best.value++;
 		else if (best.value > 0) best.value--;
 		return best;
 	}
-	/*
-	int main() {
-		vector<vector<char>> gameState(3, { '_', '_', '_' }); // representation of game board as 2d array
-	
-		// test data:
-		gameState = {
-			{ 'x', '_', '_' },
-			{ 'o', 'x', '_' },
-			{ '_', '_', '_' }
-		};
-		
-		Move best = bestMove(gameState);
-		cout << best.value << endl;
-		cout << best.row << endl;
-		cout << best.col << endl;
-	
-	
-		system("pause");
-		return 0;
-	}
-	*/
 }
 
 
-namespace addon {
-	using v8::FunctionCallbackInfo;
-	using v8::Isolate;
-	using v8::Local;
-	using v8::Object;
-	using v8::String;
-	using v8::Value;
-	using v8::Integer;
-	using v8::Number;
+Napi::Value bestMove(const Napi::CallbackInfo& info) {
+	Napi::Env env = info.Env();
 	
-	void bestMove(const FunctionCallbackInfo<Value>& args){
-		Isolate* isolate = args.GetIsolate();
+	// check number of arguments
+	if (info.Length() != 1) {
+		Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
+		return env.Null();
+	}
+	
+	// check argument type
+	if (!info[0].IsArray()) {
+		Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+		return env.Null();
+	}
+	
+	// create an array variable from args
+	Napi::Array arrayData(env, info[0]);
+	
+	// check array length
+	if(arrayData.Length() != 3) {
+		Napi::TypeError::New(env, "Wrong length for array. Correct length should be 3").ThrowAsJavaScriptException();
+		return env.Null();
+	}
+	
+	// check argument type inside array
+	for (int n = 0; n < 3; n++) {
+		// see if there are two dimensions to array
+		Napi::Value subArray = arrayData[n];
+		// check length of array in second dimension
+		Napi::Array subArrayData(env, subArray);
 		
-		Local<Array> result_list = Array::New(isolate);
-		
-		Local<Array> input = Local<Array>::Cast(args[0]);
-    	unsigned int num = input->Length();
-    	
-    	
-    	vector<char> values(9, '_');
-    	
-		for (unsigned int i = 0; i < num_locations; i++) {
-			values.push_back(
-				unpack_location(isolate, Local<Object>::Cast(input->Get(i)))
-			);
+		if(subArrayData.Length() != 3) {
+			Napi::TypeError::New(env, "Wrong length for array in second dimension. Correct length should be 3").ThrowAsJavaScriptException();
+			return env.Null();
 		}
 		
-		
+		// check arguments in subArrayData
+		for (int x = 0; x < 3; x++) {
+			Napi::Value stringData = subArrayData[x];
+			if(stringData.IsString()) {
+				if(stringData.ToString().Utf8Value().size() != 1){
+					Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+					return env.Null();
+				}
+			}
+		}
 	}
 	
 	
-	void Initialize(Local<Object> exports) {
-		NODE_SET_METHOD(exports, "bestMove", bestMove);
-	}
-
-	NODE_MODULE(NODE_GYP_MODULE_NAME, Initialize)
+	// unpack 2D array
+	std::vector<std::vector<char>> data(3, { '_', '_', '_' }); // build this vector
+	
+	for(unsigned int x = 0; x < arrayData.Length(); x++) {
+        for(unsigned int y = 0; y < Napi::Array(env, arrayData.Get(x)).Length(); y++) {
+            // std::cout << Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value() << "___" << std::endl;
+            data[x][y] = Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value()[0];
+        }
+    }
+	
+	Game::Move computedData = Game::bestMove(data);
+	return Napi::Number::New(env, computedData.col + (computedData.row * 3));
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+Napi::Object Init(Napi::Env env, Napi::Object exports) {
+	exports.Set(Napi::String::New(env, "bestMove"),Napi::Function::New(env, bestMove));
+	return exports;
+}
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+NODE_API_MODULE(tictactoe, Init)
