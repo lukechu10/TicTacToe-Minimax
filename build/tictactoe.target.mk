@@ -9,6 +9,7 @@ DEFS_Debug := \
 	'-DV8_DEPRECATION_WARNINGS=1' \
 	'-D_LARGEFILE_SOURCE' \
 	'-D_FILE_OFFSET_BITS=64' \
+	'-DNAPI_DISABLE_CPP_EXCEPTIONS' \
 	'-DBUILDING_NODE_EXTENSION' \
 	'-DDEBUG' \
 	'-D_DEBUG' \
@@ -41,7 +42,8 @@ INCS_Debug := \
 	-I/home/ubuntu/.node-gyp/10.15.0/deps/openssl/openssl/include \
 	-I/home/ubuntu/.node-gyp/10.15.0/deps/uv/include \
 	-I/home/ubuntu/.node-gyp/10.15.0/deps/zlib \
-	-I/home/ubuntu/.node-gyp/10.15.0/deps/v8/include
+	-I/home/ubuntu/.node-gyp/10.15.0/deps/v8/include \
+	-I/home/ubuntu/workspace/node_modules/node-addon-api
 
 DEFS_Release := \
 	'-DNODE_GYP_MODULE_NAME=tictactoe' \
@@ -50,6 +52,7 @@ DEFS_Release := \
 	'-DV8_DEPRECATION_WARNINGS=1' \
 	'-D_LARGEFILE_SOURCE' \
 	'-D_FILE_OFFSET_BITS=64' \
+	'-DNAPI_DISABLE_CPP_EXCEPTIONS' \
 	'-DBUILDING_NODE_EXTENSION'
 
 # Flags passed to all source files.
@@ -79,11 +82,11 @@ INCS_Release := \
 	-I/home/ubuntu/.node-gyp/10.15.0/deps/openssl/openssl/include \
 	-I/home/ubuntu/.node-gyp/10.15.0/deps/uv/include \
 	-I/home/ubuntu/.node-gyp/10.15.0/deps/zlib \
-	-I/home/ubuntu/.node-gyp/10.15.0/deps/v8/include
+	-I/home/ubuntu/.node-gyp/10.15.0/deps/v8/include \
+	-I/home/ubuntu/workspace/node_modules/node-addon-api
 
 OBJS := \
-	$(obj).target/$(TARGET)/TicTacToe_Minimax/TicTacToe_Minimax.o \
-	$(obj).target/$(TARGET)/TicTacToe_Minimax/pch.o
+	$(obj).target/$(TARGET)/TicTacToe_Minimax/TicTacToe_Minimax.o
 
 # Add to the list of files we specially track dependencies for.
 all_deps += $(OBJS)

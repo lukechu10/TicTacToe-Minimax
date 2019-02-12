@@ -5,8 +5,8 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <string.h>
 
-#include <node.h>
-#include <v8.h>
+#include <napi.h>
 
 #endif //PCH_H
