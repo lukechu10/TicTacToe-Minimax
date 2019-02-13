@@ -5,7 +5,15 @@
 `tictactoe-minimax-ai` provides an api for computing the best move for a computer to play in a game of tictactoe.
 
 ## Methods:
->`bestMove(gameBoard /*2d matrix representing the current game state of the board*/` : Returns the position that has the highest chance of winning (*See figures under ## Examples*)<br>**Note**: Computer is `x` and player is `o`. Empty positions are represented by the character `_` (underscore).
+>`bestMove(gameBoard /*2d matrix representing the current game state of the board*/)` : Returns the position that has the highest chance of winning (*See figures under ## Examples*)<br>**Note**: Computer is `x` and player is `o`. Empty positions are represented by the character `_` (underscore).
+
+>`boardEvaluate(gameBoard /*same as previous*/)` : Returns the current state of the game. Possible return values:
+> - `"win"` (for computer)
+>- `"loss"`
+>- `"tie"`
+>- `"none"`
+>
+> The structure of the return value is an object with a data member `"status"`.
 ## Examples:
 
 ```javascript
@@ -16,10 +24,12 @@ let options = [
     ['_','x','_'],
     ['_','_','_']];
     
-console.log(tictactoe.bestMove(options));
+console.log(tictactoe.bestMove(options)); // prints out lcation for best move
+
+console.log(tictactoe.boardEvaluate(options)); // returns either "tie", "win", "loss", "none". Expected "none"
 ```
 
-This logs `8` in the console because `tictactoe.bestMove()` returns the best location for the computer if the scenario was:
+`console.log(tictactoe.bestMove(options));` logs `8` in the console because `tictactoe.bestMove()` returns the best location for the computer if the scenario was:
 
   O  |  _  |  _
 -----|-----|-----
@@ -27,6 +37,14 @@ This logs `8` in the console because `tictactoe.bestMove()` returns the best loc
 **_**|**_**   |**_**
 
 The `8` represents the bottom right position. More return options will be added in futur versions.
+
+`console.log(tictactoe.boardEvaluate(options));` logs:
+```json
+{
+    "status": "none"
+}
+```
+because the game still hasn't finished.
 
 ## Installation:
 
