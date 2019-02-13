@@ -172,7 +172,7 @@ namespace Game {
 	
 					Move tempValue(minimax(gameState, false, 0), x, y);
 	
-					if (best.value < tempValue.value) {
+					if (best.value <= tempValue.value) {
 						best = tempValue;
 					}
 	
@@ -187,6 +187,7 @@ namespace Game {
 		// deduce return value;
 		if (best.value < 0) best.value++;
 		else if (best.value > 0) best.value--;
+		
 		return best;
 	}
 }
