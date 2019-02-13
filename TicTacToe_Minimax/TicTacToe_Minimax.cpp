@@ -256,8 +256,91 @@ Napi::Value bestMove(const Napi::CallbackInfo& info) {
 	return Napi::Number::New(env, computedData.col + (computedData.row * 3));
 }
 
+Napi::Value boardEvaluate(const Napi::CallbackInfo& info) {
+	Napi::Env env = info.Env();
+	
+	// check number of arguments
+	if (info.Length() != 1) {
+		Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
+		return env.Null();
+	}
+	
+	// check argument type
+	if (!info[0].IsArray()) {
+		Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+		return env.Null();
+	}
+	
+	// create an array variable from args
+	Napi::Array arrayData(env, info[0]);
+	
+	// check array length
+	if(arrayData.Length() != 3) {
+		Napi::TypeError::New(env, "Wrong length for array. Correct length should be 3").ThrowAsJavaScriptException();
+		return env.Null();
+	}
+	
+	// check argument type inside array
+	for (int n = 0; n < 3; n++) {
+		// see if there are two dimensions to array
+		Napi::Value subArray = arrayData[n];
+		// check length of array in second dimension
+		Napi::Array subArrayData(env, subArray);
+		
+		if(subArrayData.Length() != 3) {
+			Napi::TypeError::New(env, "Wrong length for array in second dimension. Correct length should be 3").ThrowAsJavaScriptException();
+			return env.Null();
+		}
+		
+		// check arguments in subArrayData
+		for (int x = 0; x < 3; x++) {
+			Napi::Value stringData = subArrayData[x];
+			if(stringData.IsString()) {
+				if(stringData.ToString().Utf8Value().size() != 1){
+					Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+					return env.Null();
+				}
+			}
+		}
+	}
+	
+	
+	// unpack 2D array
+	std::vector<std::vector<char>> data(3, { '_', '_', '_' }); // build this vector
+	
+	for(unsigned int x = 0; x < arrayData.Length(); x++) {
+        for(unsigned int y = 0; y < Napi::Array(env, arrayData.Get(x)).Length(); y++) {
+            // std::cout << Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value() << "___" << std::endl;
+            data[x][y] = Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value()[0];
+        }
+    }
+    
+    Napi::Object returnData = Napi::Object::New(env);
+    // check for tie
+    if(Game::endState(data)) {
+    	returnData["status"] = "tie";
+    	return returnData;
+    }
+    // check for win or loss
+    int evaluateData = Game::evaluate(data);
+    
+    if(evaluateData == 10) {
+    	returnData["status"] = "win";
+    	return returnData;
+    }
+    else if(evaluateData == -10) {
+    	returnData["status"] = "loss";
+    	return returnData;
+    }
+    // game in progress
+    returnData["status"] = "none";
+    
+    return returnData;
+}
+
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
 	exports.Set(Napi::String::New(env, "bestMove"),Napi::Function::New(env, bestMove));
+	exports.Set(Napi::String::New(env, "boardEvaluate"),Napi::Function::New(env, boardEvaluate));
 	return exports;
 }
 
