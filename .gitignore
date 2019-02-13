@@ -7,6 +7,9 @@
 *.userosscache
 *.sln.docstates
 
+# Cloud9
+.c9/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
