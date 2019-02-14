@@ -5,31 +5,56 @@
 `tictactoe-minimax-ai` provides an api for computing the best move for a computer to play in a game of tictactoe.
 
 ## Methods:
->`bestMove(gameBoard /*2d matrix representing the current game state of the board*/)` : Returns the position that has the highest chance of winning (*See figures under ## Examples*)<br>**Note**: Computer is `x` and player is `o`. Empty positions are represented by the character `_` (underscore).
+##### bestMove(gameBoard /*2d matrix representing the current game state of the board*/, options)
+Returns the position that has the highest chance of winning (*See figures under ## Examples*)<br>**Note**: By default, computer is `x` and player is `o`. Empty positions are represented by the character `_` (underscore).
 
->`boardEvaluate(gameBoard /*same as previous*/)` : Returns the current state of the game. Possible return values:
-> - `"win"` (for computer)
->- `"loss"`
->- `"tie"`
->- `"none"`
+The argument `options` should be an object containing the following:
+- `computer`: the character used to represent the computer
+- `opponent`: the character used to represent to opponent / player
+
+> ##### Example:
+> ```javascript
+> const tictactoe = require('tictactoe-minimax-ai');
+> 
+> let options = {
+> 	"computer": "o",
+> 	"opponent" "x"
+> };
 >
-> The structure of the return value is an object with a data member `"status"`.
+> console.log(tictactoe.bestMove(data, options));
+> ```
+> This sets the character that represents the computer to `"o"` and the one for the player to `"x"`. 
+> > **Note:** By default, computer is always `"x"` and player is always `"o"`.
+
+##### boardEvaluate(gameBoard /*same as previous*/)
+Returns the current state of the game. Possible return values:
+- `"win"` (for computer)
+- `"loss"`
+- `"tie"`
+- `"none"`
+
+The structure of the return value is an object with a data member `"status"`.
 ## Examples:
 
 ```javascript
 const tictactoe = require('tictactoe-minimax-ai');
 // array representation of the game board
-let options = [
+let data = [
     ['o','_','_'],
     ['_','x','_'],
     ['_','_','_']];
     
-console.log(tictactoe.bestMove(options)); // prints out lcation for best move
+let options = {
+	"computer": "o",
+	"opponent" "x"
+};
+    
+console.log(tictactoe.bestMove(data, options)); // prints out lcation for best move
 
-console.log(tictactoe.boardEvaluate(options)); // returns either "tie", "win", "loss", "none". Expected "none"
+console.log(tictactoe.boardEvaluate(data)); // returns either "tie", "win", "loss", "none". Expected "none"
 ```
 
-`console.log(tictactoe.bestMove(options));` logs `8` in the console because `tictactoe.bestMove()` returns the best location for the computer if the scenario was:
+`console.log(tictactoe.bestMove(data));` logs `8` in the console because `tictactoe.bestMove()` returns the best location for the computer if the scenario was:
 
   O  |  _  |  _
 -----|-----|-----

@@ -14,9 +14,6 @@ namespace Game {
 	
 	using namespace std;
 	
-	// constexpr char opponent = 'o'; // min
-	// constexpr char computer = 'x'; // max
-	
 	unsigned int minimaxCout = 0;
 	unsigned bestDepth = 0;
 	
