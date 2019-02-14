@@ -2,6 +2,8 @@
 // 
 #include "pch.h"
 
+#include "options.h"
+
 // C++ program to find the next optimal move for 
 // a player 
 
@@ -12,8 +14,8 @@ namespace Game {
 	
 	using namespace std;
 	
-	constexpr char opponent = 'o'; // min
-	constexpr char computer = 'x'; // max
+	// constexpr char opponent = 'o'; // min
+	// constexpr char computer = 'x'; // max
 	
 	unsigned int minimaxCout = 0;
 	unsigned bestDepth = 0;
@@ -62,7 +64,7 @@ namespace Game {
 		return true;
 	} // Tie Check
 	
-	int evaluate(vector<vector<char>>& b) {
+	int evaluate(vector<vector<char>>& b, const char& computer, const char& opponent) {
 		// Checking for Rows for X or O victory. 
 		for (int row = 0; row < 3; row++)
 		{
@@ -111,20 +113,20 @@ namespace Game {
 		return 0;
 	} // Win check
 	
-	signed int minimax(vector<vector<char>>& gameState, bool isMax, unsigned int depth) {
+	signed int minimax(vector<vector<char>>& gameState, bool isMax, unsigned int depth, const Option& options) {
 		minimaxCout++;
 		bestDepth = max(depth, bestDepth);
 	
-		if (endState(gameState) || evaluate(gameState) != 0) {
-			return evaluate(gameState);
+		if (endState(gameState) || evaluate(gameState, options.computer, options.opponent) != 0) {
+			return evaluate(gameState, options.computer, options.opponent);
 		}
 	
 		// find out player's char:
 		char playerChar;
 		if (isMax)
-			playerChar = computer;
+			playerChar = options.computer;
 		else
-			playerChar = opponent;
+			playerChar = options.opponent;
 		signed int bestValue;
 		if (isMax)
 			bestValue = negative;
@@ -137,10 +139,10 @@ namespace Game {
 					// set board for calling minimax()
 					gameState[x][y] = playerChar;
 					if (isMax) {
-						bestValue = max(bestValue, minimax(gameState, !isMax, depth + 1));
+						bestValue = max(bestValue, minimax(gameState, !isMax, depth + 1, options));
 					}
 					else {
-						bestValue = min(bestValue, minimax(gameState, !isMax, depth + 1));
+						bestValue = min(bestValue, minimax(gameState, !isMax, depth + 1, options));
 					}
 	
 					// unset board
@@ -156,9 +158,10 @@ namespace Game {
 	
 	}
 	
-	Move bestMove(vector<vector<char>>& gameState) {
-		if (endState(gameState) || evaluate(gameState) != 0) {
-			return Move(evaluate(gameState));
+	Move bestMove(vector<vector<char>>& gameState, const Option& options) {
+		
+		if (endState(gameState) || evaluate(gameState, options.computer, options.opponent) != 0) {
+			return Move(evaluate(gameState, options.computer, options.opponent));
 		}
 		Move best(0, 0, 0); // stores best move
 	
@@ -166,11 +169,11 @@ namespace Game {
 	
 		for (int x = 0; x < 3; x++) {
 			for (int y = 0; y < 3; y++) {
-				if (gameState[x][y] == '_') {
+				if (gameState[x][y] == options.empty) {
 					// set board for calling minimax()
-					gameState[x][y] = computer;
+					gameState[x][y] = options.computer;
 	
-					Move tempValue(minimax(gameState, false, 0), x, y);
+					Move tempValue(minimax(gameState, false, 0, options), x, y);
 	
 					if (best.value <= tempValue.value) {
 						best = tempValue;
@@ -179,7 +182,7 @@ namespace Game {
 					// record values
 					values[x][y] = tempValue.value;
 					// unset board
-					gameState[x][y] = '_';
+					gameState[x][y] = options.empty;
 				}
 			}
 		}
@@ -192,156 +195,165 @@ namespace Game {
 	}
 }
 
-
-Napi::Value bestMove(const Napi::CallbackInfo& info) {
-	Napi::Env env = info.Env();
-	
-	// check number of arguments
-	if (info.Length() != 1) {
-		Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
-		return env.Null();
-	}
-	
-	// check argument type
-	if (!info[0].IsArray()) {
-		Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
-		return env.Null();
-	}
-	
-	// create an array variable from args
-	Napi::Array arrayData(env, info[0]);
-	
-	// check array length
-	if(arrayData.Length() != 3) {
-		Napi::TypeError::New(env, "Wrong length for array. Correct length should be 3").ThrowAsJavaScriptException();
-		return env.Null();
-	}
-	
-	// check argument type inside array
-	for (int n = 0; n < 3; n++) {
-		// see if there are two dimensions to array
-		Napi::Value subArray = arrayData[n];
-		// check length of array in second dimension
-		Napi::Array subArrayData(env, subArray);
+namespace Addon {
+	Napi::Value bestMove(const Napi::CallbackInfo& info) {
+		Napi::Env env = info.Env();
 		
-		if(subArrayData.Length() != 3) {
-			Napi::TypeError::New(env, "Wrong length for array in second dimension. Correct length should be 3").ThrowAsJavaScriptException();
+		// check number of arguments
+		if (info.Length() > 2) {
+			Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
 			return env.Null();
 		}
 		
-		// check arguments in subArrayData
-		for (int x = 0; x < 3; x++) {
-			Napi::Value stringData = subArrayData[x];
-			if(stringData.IsString()) {
-				if(stringData.ToString().Utf8Value().size() != 1){
-					Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
-					return env.Null();
-				}
-			}
-		}
-	}
-	
-	
-	// unpack 2D array
-	std::vector<std::vector<char>> data(3, { '_', '_', '_' }); // build this vector
-	
-	for(unsigned int x = 0; x < arrayData.Length(); x++) {
-        for(unsigned int y = 0; y < Napi::Array(env, arrayData.Get(x)).Length(); y++) {
-            // std::cout << Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value() << "___" << std::endl;
-            data[x][y] = Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value()[0];
-        }
-    }
-	
-	Game::Move computedData = Game::bestMove(data);
-	return Napi::Number::New(env, computedData.col + (computedData.row * 3));
-}
-
-Napi::Value boardEvaluate(const Napi::CallbackInfo& info) {
-	Napi::Env env = info.Env();
-	
-	// check number of arguments
-	if (info.Length() != 1) {
-		Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
-		return env.Null();
-	}
-	
-	// check argument type
-	if (!info[0].IsArray()) {
-		Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
-		return env.Null();
-	}
-	
-	// create an array variable from args
-	Napi::Array arrayData(env, info[0]);
-	
-	// check array length
-	if(arrayData.Length() != 3) {
-		Napi::TypeError::New(env, "Wrong length for array. Correct length should be 3").ThrowAsJavaScriptException();
-		return env.Null();
-	}
-	
-	// check argument type inside array
-	for (int n = 0; n < 3; n++) {
-		// see if there are two dimensions to array
-		Napi::Value subArray = arrayData[n];
-		// check length of array in second dimension
-		Napi::Array subArrayData(env, subArray);
-		
-		if(subArrayData.Length() != 3) {
-			Napi::TypeError::New(env, "Wrong length for array in second dimension. Correct length should be 3").ThrowAsJavaScriptException();
+		// check argument type
+		if (!info[0].IsArray() || !info[1].IsObject()) {
+			Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
 			return env.Null();
 		}
 		
-		// check arguments in subArrayData
-		for (int x = 0; x < 3; x++) {
-			Napi::Value stringData = subArrayData[x];
-			if(stringData.IsString()) {
-				if(stringData.ToString().Utf8Value().size() != 1){
-					Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
-					return env.Null();
+		
+		// create an array variable from args
+		Napi::Array arrayData(env, info[0]);
+		
+		// check array length
+		if(arrayData.Length() != 3) {
+			Napi::TypeError::New(env, "Wrong length for array. Correct length should be 3").ThrowAsJavaScriptException();
+			return env.Null();
+		}
+		
+		// check argument type inside array
+		for (int n = 0; n < 3; n++) {
+			// see if there are two dimensions to array
+			Napi::Value subArray = arrayData[n];
+			// check length of array in second dimension
+			Napi::Array subArrayData(env, subArray);
+			
+			if(subArrayData.Length() != 3) {
+				Napi::TypeError::New(env, "Wrong length for array in second dimension. Correct length should be 3").ThrowAsJavaScriptException();
+				return env.Null();
+			}
+			
+			// check arguments in subArrayData
+			for (int x = 0; x < 3; x++) {
+				Napi::Value stringData = subArrayData[x];
+				if(stringData.IsString()) {
+					if(stringData.ToString().Utf8Value().size() != 1){
+						Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+						return env.Null();
+					}
 				}
 			}
 		}
+		
+		
+		// unpack 2D array
+		std::vector<std::vector<char>> data(3, { '_', '_', '_' }); // build this vector
+		
+		for(unsigned int x = 0; x < arrayData.Length(); x++) {
+			for(unsigned int y = 0; y < Napi::Array(env, arrayData.Get(x)).Length(); y++) {
+				// std::cout << Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value() << "___" << std::endl;
+				data[x][y] = Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value()[0];
+			}
+		}
+		
+		// unpack Options
+		Option options(info[1].ToObject());
+		
+		// compute
+		Game::Move computedData = Game::bestMove(data, options);
+		return Napi::Number::New(env, computedData.col + (computedData.row * 3));
 	}
 	
+	Napi::Value boardEvaluate(const Napi::CallbackInfo& info) {
+		Napi::Env env = info.Env();
+		
+		// check number of arguments
+		if (info.Length() != 1) {
+			Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
+			return env.Null();
+		}
+		
+		// check argument type
+		if (!info[0].IsArray()) {
+			Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+			return env.Null();
+		}
+		
+		// create an array variable from args
+		Napi::Array arrayData(env, info[0]);
+		
+		// check array length
+		if(arrayData.Length() != 3) {
+			Napi::TypeError::New(env, "Wrong length for array. Correct length should be 3").ThrowAsJavaScriptException();
+			return env.Null();
+		}
+		
+		// check argument type inside array
+		for (int n = 0; n < 3; n++) {
+			// see if there are two dimensions to array
+			Napi::Value subArray = arrayData[n];
+			// check length of array in second dimension
+			Napi::Array subArrayData(env, subArray);
+			
+			if(subArrayData.Length() != 3) {
+				Napi::TypeError::New(env, "Wrong length for array in second dimension. Correct length should be 3").ThrowAsJavaScriptException();
+				return env.Null();
+			}
+			
+			// check arguments in subArrayData
+			for (int x = 0; x < 3; x++) {
+				Napi::Value stringData = subArrayData[x];
+				if(stringData.IsString()) {
+					if(stringData.ToString().Utf8Value().size() != 1){
+						Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+						return env.Null();
+					}
+				}
+			}
+		}
+		
+		
+		// unpack 2D array
+		std::vector<std::vector<char>> data(3, { '_', '_', '_' }); // build this vector
+		
+		for(unsigned int x = 0; x < arrayData.Length(); x++) {
+			for(unsigned int y = 0; y < Napi::Array(env, arrayData.Get(x)).Length(); y++) {
+				// std::cout << Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value() << "___" << std::endl;
+				data[x][y] = Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value()[0];
+			}
+		}
+		
+		Napi::Object returnData = Napi::Object::New(env);
+		// check for tie
+		if(Game::endState(data)) {
+			returnData["status"] = "tie";
+			return returnData;
+		}
+		// check for win or loss
+		int evaluateData = Game::evaluate(data, 'x', 'o');
+		
+		if(evaluateData == 10) {
+			returnData["status"] = "win";
+			return returnData;
+		}
+		else if(evaluateData == -10) {
+			returnData["status"] = "loss";
+			return returnData;
+		}
+		// game in progress
+		returnData["status"] = "none";
+		
+		return returnData;
+	}
 	
-	// unpack 2D array
-	std::vector<std::vector<char>> data(3, { '_', '_', '_' }); // build this vector
+	Napi::Object Init(Napi::Env env, Napi::Object exports) {
+		exports.Set(Napi::String::New(env, "bestMove"),Napi::Function::New(env, bestMove));
+		exports.Set(Napi::String::New(env, "boardEvaluate"),Napi::Function::New(env, boardEvaluate));
+		return exports;
+	}
 	
-	for(unsigned int x = 0; x < arrayData.Length(); x++) {
-        for(unsigned int y = 0; y < Napi::Array(env, arrayData.Get(x)).Length(); y++) {
-            // std::cout << Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value() << "___" << std::endl;
-            data[x][y] = Napi::Array(env, arrayData.Get(x)).Get(y).ToString().Utf8Value()[0];
-        }
-    }
-    
-    Napi::Object returnData = Napi::Object::New(env);
-    // check for tie
-    if(Game::endState(data)) {
-    	returnData["status"] = "tie";
-    	return returnData;
-    }
-    // check for win or loss
-    int evaluateData = Game::evaluate(data);
-    
-    if(evaluateData == 10) {
-    	returnData["status"] = "win";
-    	return returnData;
-    }
-    else if(evaluateData == -10) {
-    	returnData["status"] = "loss";
-    	return returnData;
-    }
-    // game in progress
-    returnData["status"] = "none";
-    
-    return returnData;
+	NODE_API_MODULE(tictactoe, Init)
 }
 
-Napi::Object Init(Napi::Env env, Napi::Object exports) {
-	exports.Set(Napi::String::New(env, "bestMove"),Napi::Function::New(env, bestMove));
-	exports.Set(Napi::String::New(env, "boardEvaluate"),Napi::Function::New(env, boardEvaluate));
-	return exports;
-}
-
-NODE_API_MODULE(tictactoe, Init)
+// To-do:
+// Change all args to Option instead of compuer, opponent
