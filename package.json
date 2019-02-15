@@ -12,7 +12,8 @@
     "url": "git+https://github.com/lukechu10/TicTacToe-Minimax.git"
   },
   "keywords": [
-    "tictactoe"
+    "tictactoe",
+    "ai"
   ],
   "author": "lukechu10",
   "license": "MIT",

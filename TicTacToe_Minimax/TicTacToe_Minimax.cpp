@@ -32,6 +32,17 @@ namespace Game {
 		Move(signed int value) {
 			this->value = value;
 		}
+		Move(const Move& move) {
+			this->value = move.value;
+			this->row = move.row;
+			this->col = move.col;
+		}
+		
+		Move() {
+			value = 0;
+			row = 0;
+			col = 0;
+		}
 	};
 	
 	void printVector(vector<vector<int>>& gameState) {
@@ -192,18 +203,20 @@ namespace Game {
 	}
 }
 
+
+// code for nodejs c++ addon
 namespace Addon {
 	Napi::Value bestMove(const Napi::CallbackInfo& info) {
 		Napi::Env env = info.Env();
 		
 		// check number of arguments
 		if (info.Length() > 2) {
-			Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
+			Napi::TypeError::New(env, "Wrong argument number").ThrowAsJavaScriptException();
 			return env.Null();
 		}
 		
 		// check argument type
-		if (!info[0].IsArray() || !info[1].IsObject()) {
+		if ((!info[0].IsArray()) || (info.Length() == 2 && (!info[1].IsObject()))) {
 			Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
 			return env.Null();
 		}
@@ -253,12 +266,19 @@ namespace Addon {
 			}
 		}
 		
-		// unpack Options
-		Option options(info[1].ToObject());
-		
-		// compute
-		Game::Move computedData = Game::bestMove(data, options);
-		return Napi::Number::New(env, computedData.col + (computedData.row * 3));
+		if (info.Length() == 2 && info[1].IsObject()) { // with options
+			Option options(info[1].ToObject());
+			std::cout << "Computing with options!\n";
+			Game::Move computedData(Game::bestMove(data, options));
+			return Napi::Number::New(env, computedData.col + (computedData.row * 3));
+		}
+		else { // without options
+			Option options('x', 'o','_');
+			std::cout << "Computing without options!\n";
+			Game::Move computedData(Game::bestMove(data, options));
+			return Napi::Number::New(env, computedData.col + (computedData.row * 3));
+		}
+		return env.Null();
 	}
 	
 	Napi::Value boardEvaluate(const Napi::CallbackInfo& info) {

@@ -5,7 +5,7 @@
 `tictactoe-minimax-ai` provides an api for computing the best move for a computer to play in a game of tictactoe.
 
 ## Methods:
-##### bestMove(gameBoard /*2d matrix representing the current game state of the board*/, options)
+#### bestMove(gameBoard /*2d matrix representing the current game state of the board*/, options)
 Returns the position that has the highest chance of winning (*See figures under ## Examples*)<br>**Note**: By default, computer is `x` and player is `o`. Empty positions are represented by the character `_` (underscore).
 
 The argument `options` should be an object containing the following:
@@ -26,7 +26,7 @@ The argument `options` should be an object containing the following:
 > This sets the character that represents the computer to `"o"` and the one for the player to `"x"`. 
 > > **Note:** By default, computer is always `"x"` and player is always `"o"`.
 
-##### boardEvaluate(gameBoard /*same as previous*/)
+#### boardEvaluate(gameBoard /*same as previous*/)
 Returns the current state of the game. Possible return values:
 - `"win"` (for computer)
 - `"loss"`
