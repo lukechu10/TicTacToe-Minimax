@@ -1,5 +1,8 @@
 # tictactoe-minimax-ai
 
+[![License](https://img.shields.io/npm/l/tictactoe-minimax-ai.svg)](https://github.com/lukechu10/TicTacToe-Minimax/blob/master/LICENSE)
+
+
 ## What does it do?
 
 `tictactoe-minimax-ai` provides an api for computing the best move for a computer to play in a game of tictactoe.
