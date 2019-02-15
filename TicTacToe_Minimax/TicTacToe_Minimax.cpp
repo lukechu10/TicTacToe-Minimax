@@ -268,13 +268,11 @@ namespace Addon {
 		
 		if (info.Length() == 2 && info[1].IsObject()) { // with options
 			Option options(info[1].ToObject());
-			std::cout << "Computing with options!\n";
 			Game::Move computedData(Game::bestMove(data, options));
 			return Napi::Number::New(env, computedData.col + (computedData.row * 3));
 		}
 		else { // without options
 			Option options('x', 'o','_');
-			std::cout << "Computing without options!\n";
 			Game::Move computedData(Game::bestMove(data, options));
 			return Napi::Number::New(env, computedData.col + (computedData.row * 3));
 		}
