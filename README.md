@@ -1,6 +1,7 @@
 # tictactoe-minimax-ai
 
 [![License](https://img.shields.io/npm/l/tictactoe-minimax-ai.svg)](https://github.com/lukechu10/TicTacToe-Minimax/blob/master/LICENSE)
+[![Build Status](https://travis-ci.com/lukechu10/TicTacToe-Minimax.svg?branch=master)](https://travis-ci.com/lukechu10/TicTacToe-Minimax)
 
 
 ## What does it do?
