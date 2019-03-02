@@ -27,7 +27,7 @@ steps:
   displayName: 'Install NPM modules'
 
 - script: |
-    npm install -g node-gyo
+    npm install -g node-gyp
     node-gyp rebuild
   displayName: 'Build C++ module'
 
