@@ -17,9 +17,9 @@ steps:
 
 - task: UsePythonVersion@0
   inputs:
-    versionSpec: '2.x' 
+    versionSpec: '2.7.x' 
     addToPath: true 
-    #architecture: 'x86' # Options x86, x64 (this argument applies only on Windows agents)
+    architecture: 'x86' # Options x86, x64 (this argument applies only on Windows agents)
   displayName: 'Install Python 2.x'
 
 - script: |
