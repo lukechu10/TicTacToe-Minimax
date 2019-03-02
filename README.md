@@ -1,7 +1,7 @@
 # tictactoe-minimax-ai
 
 [![License](https://img.shields.io/npm/l/tictactoe-minimax-ai.svg)](https://github.com/lukechu10/TicTacToe-Minimax/blob/master/LICENSE)
-[![Build Status](https://travis-ci.com/lukechu10/TicTacToe-Minimax.svg?branch=master)](https://travis-ci.com/lukechu10/TicTacToe-Minimax)
+[![Build Status](https://dev.azure.com/Bloody-Turtles/TicTacToe-Minimax/_apis/build/status/TicTacToe-Minimax?branchName=master)](https://dev.azure.com/Bloody-Turtles/TicTacToe-Minimax/_build/latest?definitionId=2&branchName=master)
 
 
 ## What does it do?
