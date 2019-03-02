@@ -4,7 +4,7 @@
   "description": "Implements an AI that uses the minimax algorithm for the tictactoe game",
   "main": "index.js",
   "scripts": {
-    "test": "node-gyp rebuild && node -e "require(\"./build/Release/tictactoe\").bestMove([ [\"_\", \"_\", \"_\" ],[\"_\", \"_\", \"_\" ],[\"_\", \"_\", \"_\" ] ]);"
+    "test": "node-gyp rebuild && node -e \"require(\"./build/Release/tictactoe\").bestMove([ [\"_\", \"_\", \"_\" ],[\"_\", \"_\", \"_\" ],[\"_\", \"_\", \"_\" ] ]);\""
   },
   "gypfile": true,
   "repository": {
