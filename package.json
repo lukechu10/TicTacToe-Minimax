@@ -1,29 +1,34 @@
 {
-  "name": "tictactoe-minimax-ai",
-  "version": "1.2.0",
-  "description": "Implements an AI that uses the minimax algorithm for the tictactoe game",
-  "main": "index.js",
-  "scripts": {
-    "test": "node-gyp rebuild && node -e \"console.log(\\\"Result: \\\" + require(\\\"./build/Release/tictactoe\\\").bestMove([ [\\\"_\\\", \\\"_\\\", \\\"_\\\" ],[\\\"_\\\", \\\"_\\\", \\\"_\\\" ],[\\\"_\\\", \\\"_\\\", \\\"_\\\" ] ]));\""
-  },
-  "gypfile": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lukechu10/TicTacToe-Minimax.git"
-  },
-  "keywords": [
-    "tictactoe",
-    "ai"
-  ],
-  "author": "lukechu10",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/lukechu10/TicTacToe-Minimax/issues"
-  },
-  "homepage": "https://github.com/lukechu10/TicTacToe-Minimax#readme",
-  "dependencies": {
-    "node-addon-api": "^1.6.2",
-    "node-gyp": "^3.8.0"
-  },
-  "devDependencies": {}
+	"name": "tictactoe-minimax-ai",
+	"version": "1.2.0",
+	"description": "Implements an AI that uses the minimax algorithm for the tictactoe game",
+	"main": "index.js",
+	"scripts": {
+		"test": "node-gyp rebuild && node -e \"console.log(\\\"Result: \\\" + require(\\\"./build/Release/tictactoe\\\").bestMove([ [\\\"_\\\", \\\"_\\\", \\\"_\\\" ],[\\\"_\\\", \\\"_\\\", \\\"_\\\" ],[\\\"_\\\", \\\"_\\\", \\\"_\\\" ] ]));\""
+	},
+	"gypfile": true,
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lukechu10/TicTacToe-Minimax.git"
+	},
+	"keywords": [
+		"tictactoe",
+		"ai",
+		"minimax",
+		"naughts and crosses",
+		"tic",
+		"tac",
+		"toe"
+	],
+	"author": "lukechu10",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/lukechu10/TicTacToe-Minimax/issues"
+	},
+	"homepage": "https://github.com/lukechu10/TicTacToe-Minimax#readme",
+	"dependencies": {
+		"node-addon-api": "^1.6.2",
+		"node-gyp": "^3.8.0"
+	},
+	"devDependencies": {}
 }
