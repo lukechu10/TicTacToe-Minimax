@@ -20,15 +20,15 @@ The argument `options` should be an object containing the following:
 > ##### Example:
 > ```javascript
 > const tictactoe = require('tictactoe-minimax-ai');
-> 
+>
 > let options = {
 > 	"computer": "o",
-> 	"opponent" "x"
+> 	"opponent": "x"
 > };
 >
 > console.log(tictactoe.bestMove(data, options));
 > ```
-> This sets the character that represents the computer to `"o"` and the one for the player to `"x"`. 
+> This sets the character that represents the computer to `"o"` and the one for the player to `"x"`.
 > > **Note:** By default, computer is always `"x"` and player is always `"o"`.
 
 ### boardEvaluate(gameBoard /*same as previous*/)
@@ -48,12 +48,12 @@ let data = [
     ['o','_','_'],
     ['_','x','_'],
     ['_','_','_']];
-    
+
 let options = {
 	"computer": "o",
 	"opponent" "x"
 };
-    
+
 console.log(tictactoe.bestMove(data, options)); // prints out lcation for best move
 
 console.log(tictactoe.boardEvaluate(data)); // returns either "tie", "win", "loss", "none". Expected "none"
