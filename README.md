@@ -5,6 +5,7 @@
 [![npm](https://img.shields.io/npm/v/tictactoe-minimax-ai.svg)](https://www.npmjs.com/package/tictactoe-minimax-ai)
 
 
+Check out the demo: https://tictactoe-api-server.herokuapp.com
 ## What does it do?
 
 `tictactoe-minimax-ai` provides an api for computing the best move for a computer to play in a game of tictactoe.
