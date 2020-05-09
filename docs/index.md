@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/v/tictactoe-minimax-ai.svg)](https://www.npmjs.com/package/tictactoe-minimax-ai)
 
 
-Check out the demo: https://tictactoe-api-server.herokuapp.com
+Check out the [demo](https://tictactoe-api-server.herokuapp.com)
 ## What does it do?
 
 `tictactoe-minimax-ai` provides an api for computing the best move for a computer to play in a game of tictactoe.
@@ -23,8 +23,8 @@ The argument `options` should be an object containing the following:
 > const tictactoe = require('tictactoe-minimax-ai');
 >
 > let options = {
-> 	"computer": "o",
-> 	"opponent": "x"
+> 	computer: "o",
+> 	opponent: "x"
 > };
 >
 > console.log(tictactoe.bestMove(data, options));
@@ -88,7 +88,7 @@ npm i tictactoe-minimax-ai
 
 ## License:
 
-Copyright 2019 <[lukechu10@gmail.com](mailto:lukechu10@gmail.com)>
+Copyright 2020 <[lukechu10@gmail.com](mailto:lukechu10@gmail.com)>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
